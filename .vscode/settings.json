@@ -1,0 +1,10 @@
+{
+    
+    "cortex-debug.gdbPath": "F:/stm32/win-dev-tools/gcc-arm-none-eabi/bin/arm-none-eabi-gdb",
+    "cortex-debug.openocdPath:": "F:/stm32/win-dev-tools/Openocd/bin/openocd",
+    "files.associations": {
+        "stm32g4xx_hal_def.h": "c",
+        "stm32g4xx.h": "c",
+        "stddef.h": "c"
+    }
+}
