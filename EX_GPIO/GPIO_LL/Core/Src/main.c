@@ -33,6 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define LED_Init_without_gpio
+// #define LED_Init_with_gpio_LL
 
 /* USER CODE END PD */
 
@@ -50,8 +52,15 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+#ifdef LED_Init_with_gpio_LL
 void LED_Init(void);
 void LED_Toggle(void);
+
+#endif // DEBUG
+#ifdef LED_Init_without_gpio
+#define LED2_GPIO_CLK_ENABLE()             LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA)
+void     Configure_GPIO(void);
+#endif
 
 /* USER CODE END PFP */
 
@@ -98,9 +107,16 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  #ifdef LED_Init_with_gpio_LL
   MX_GPIO_Init();
+  #endif
   /* USER CODE BEGIN 2 */
+  #ifdef LED_Init_with_gpio_LL
   LED_Init();
+  #endif
+  #ifdef LED_Init_without_gpio
+  Configure_GPIO();
+  #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,9 +127,17 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     /* Toggle LED */
+      #ifdef LED_Init_with_gpio_LL
         LED_Toggle();
          /* Delay (you can add your own delay function here if needed) */
         for (volatile int i = 0; i < 1000000; i++) {}
+      #endif
+      #ifdef LED_Init_without_gpio
+        LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    
+        /* Insert delay 250 ms */
+        LL_mDelay(250);
+      #endif
   }
   /* USER CODE END 3 */
 }
@@ -165,6 +189,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+#ifdef LED_Init_with_gpio_LL
 void LED_Init(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -188,6 +213,24 @@ void LED_Toggle(void)
 {
     LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 }
+#endif // DEBUG
+
+#ifdef LED_Init_without_gpio
+void Configure_GPIO(void)
+{
+  /* Enable the LED2 Clock */
+  LED2_GPIO_CLK_ENABLE();
+
+  /* Configure IO */
+  LL_GPIO_SetPinMode(LED_GPIO_Port, LED_Pin, LL_GPIO_MODE_OUTPUT);
+  /* Reset value is LL_GPIO_OUTPUT_PUSHPULL */
+  //LL_GPIO_SetPinOutputType(LED2_GPIO_PORT, LED2_PIN, LL_GPIO_OUTPUT_PUSHPULL);
+  /* Reset value is LL_GPIO_SPEED_FREQ_LOW */
+  //LL_GPIO_SetPinSpeed(LED2_GPIO_PORT, LED2_PIN, LL_GPIO_SPEED_FREQ_LOW);
+  /* Reset value is LL_GPIO_PULL_NO */
+  //LL_GPIO_SetPinPull(LED2_GPIO_PORT, LED2_PIN, LL_GPIO_PULL_NO);
+}
+#endif
 
 /* USER CODE END 4 */
 
