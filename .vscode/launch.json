@@ -6,7 +6,7 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
-            "executable": "./EX_GPIO/GPIO/build/GPIO.elf",
+            "executable": "./EX_GPIO/GPIO_LL/build/GPIO_LL.elf",
             "name": "Debug with OpenOCD",
             "request": "launch",
             "type": "cortex-debug",
